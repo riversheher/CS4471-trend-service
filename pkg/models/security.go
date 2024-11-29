@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"strconv"
 	"strings"
 	"time"
@@ -31,28 +32,28 @@ type GainersLosersResponse struct {
 	Active       []SecurityResponse `json:"most_actively_traded"`
 }
 
-func (s *SecurityResponse) ToSecurity() *Security {
+func (s *SecurityResponse) ToSecurity() (*Security, error) {
 
 	price, err := strconv.ParseFloat(s.Price, 64)
 	if err != nil {
-		price = -1
+		return nil, errors.New("failed to parse price: " + err.Error())
 	}
 
 	changeAmount, err := strconv.ParseFloat(s.ChangeAmount, 64)
 	if err != nil {
-		changeAmount = -1
+		return nil, errors.New("failed to parse change amount: " + err.Error())
 	}
 
 	cleanedPercent := strings.Replace(s.ChangePercent, "%", "", -1)
 	changePercent, err := strconv.ParseFloat(cleanedPercent, 64)
 	if err != nil {
-		changePercent = -1
+		return nil, errors.New("failed to parse change percent: " + err.Error())
 	}
 	changePercent = changePercent / 100
 
 	volume, err := strconv.Atoi(s.Volume)
 	if err != nil {
-		volume = -1
+		return nil, errors.New("failed to parse volume: " + err.Error())
 	}
 
 	return &Security{
@@ -62,5 +63,5 @@ func (s *SecurityResponse) ToSecurity() *Security {
 		ChangePercent: changePercent,
 		Volume:        volume,
 		Timestamp:     time.Now(),
-	}
+	}, nil
 }
