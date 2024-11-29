@@ -1,14 +1,66 @@
 package models
 
 import (
+	"strconv"
+	"strings"
 	"time"
 )
 
 type Security struct {
-	Ticker        string
-	Price         float64
-	ChangeAmount  float64
-	ChangePercent float64
-	Volume        float64
+	Ticker        string  `json:"ticker"`
+	Price         float64 `json:"price"`
+	ChangeAmount  float64 `json:"change_amount"`
+	ChangePercent float64 `json:"change_percentage"`
+	Volume        int     `json:"volume"`
 	Timestamp     time.Time
+}
+
+type SecurityResponse struct {
+	Ticker        string `json:"ticker"`
+	Price         string `json:"price"`
+	ChangeAmount  string `json:"change_amount"`
+	ChangePercent string `json:"change_percentage"`
+	Volume        string `json:"volume"`
+}
+
+type GainersLosersResponse struct {
+	Metadata     string             `json:"metadata"`
+	Last_updated string             `json:"last_updated"`
+	Gainers      []SecurityResponse `json:"top_gainers"`
+	Losers       []SecurityResponse `json:"top_losers"`
+	Active       []SecurityResponse `json:"most_actively_traded"`
+}
+
+func (s *SecurityResponse) ToSecurity() *Security {
+
+	price, err := strconv.ParseFloat(s.Price, 64)
+	if err != nil {
+		price = -1
+	}
+
+	changeAmount, err := strconv.ParseFloat(s.ChangeAmount, 64)
+	if err != nil {
+		changeAmount = -1
+	}
+
+	cleanedPercent := strings.Replace(s.ChangePercent, "%", "", -1)
+	changePercent, err := strconv.ParseFloat(cleanedPercent, 64)
+	if err != nil {
+		changePercent = -1
+	}
+	changePercent = changePercent / 100
+
+	volume, err := strconv.Atoi(s.Volume)
+	if err != nil {
+		volume = -1
+	}
+
+	return &Security{
+		Ticker:        s.Ticker,
+		Price:         price,
+		ChangeAmount:  changeAmount,
+		ChangePercent: changePercent,
+		Volume:        volume,
+		Timestamp:     time.Now(),
+	}
 }
