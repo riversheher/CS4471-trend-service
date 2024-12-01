@@ -13,19 +13,46 @@ func Gainers(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to fetch data", http.StatusInternalServerError)
 		return
 	}
-	fmt.Fprint(w, response)
+	gainers, err := client.GetGainers(response)
+	if err != nil {
+		http.Error(w, "Failed to convert", http.StatusInternalServerError)
+		return
+	}
+	fmt.Fprint(w, gainers)
 }
 
 func Losers(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "Top Losers")
+	response, err := client.GetGainersLosers()
+	if err != nil {
+		http.Error(w, "Failed to fetch data", http.StatusInternalServerError)
+		return
+	}
+	losers, err := client.GetLosers(response)
+	if err != nil {
+		http.Error(w, "Failed to convert", http.StatusInternalServerError)
+		return
+	}
+
+	fmt.Fprint(w, losers)
 }
 
 func MostActive(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "Most Active")
+	response, err := client.GetGainersLosers()
+	if err != nil {
+		http.Error(w, "Failed to fetch data", http.StatusInternalServerError)
+		return
+	}
+	active, err := client.GetActive(response)
+	if err != nil {
+		http.Error(w, "Failed to convert", http.StatusInternalServerError)
+		return
+	}
+
+	fmt.Fprint(w, active)
 }
 
 func InitRoutes() {
 	http.HandleFunc("/gainers", Gainers)
 	http.HandleFunc("/losers", Losers)
-	http.HandleFunc("/most-active", MostActive)
+	http.HandleFunc("/active", MostActive)
 }

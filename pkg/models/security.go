@@ -32,7 +32,7 @@ type GainersLosersResponse struct {
 	Active       []SecurityResponse `json:"most_actively_traded"`
 }
 
-func (s *SecurityResponse) ToSecurity() (*Security, error) {
+func (s *SecurityResponse) ToSecurity(time time.Time) (*Security, error) {
 
 	price, err := strconv.ParseFloat(s.Price, 64)
 	if err != nil {
@@ -62,6 +62,6 @@ func (s *SecurityResponse) ToSecurity() (*Security, error) {
 		ChangeAmount:  changeAmount,
 		ChangePercent: changePercent,
 		Volume:        volume,
-		Timestamp:     time.Now(),
+		Timestamp:     time,
 	}, nil
 }
