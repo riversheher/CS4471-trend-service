@@ -43,10 +43,10 @@ func GetTokenFromRegistry(registryURL string) (interface{}, error) {
 
 }
 
-func RegisterSelf(registryURL string, accessToken string, appInfo map[string]string) (interface{}, error) {
+func RegisterSelf(registryURL string, accessToken string, appInfo map[string]interface{}) (interface{}, error) {
 
 	// Create JSON request with username and password
-	body := map[string]string{
+	body := map[string]interface{}{
 		"serviceName": appInfo["serviceName"],
 		"port":        appInfo["port"],
 		"description": appInfo["description"],
@@ -78,9 +78,9 @@ func RegisterSelf(registryURL string, accessToken string, appInfo map[string]str
 	return nil, nil
 }
 
-func ReregisterSelf(registryURL string, accessToken string, appInfo map[string]string) error {
+func ReregisterSelf(registryURL string, accessToken string, appInfo map[string]interface{}) error {
 
-	body := map[string]string{
+	body := map[string]interface{}{
 		"serviceName": appInfo["serviceName"],
 		"instanceId":  appInfo["instanceId"],
 	}
@@ -108,8 +108,8 @@ func ReregisterSelf(registryURL string, accessToken string, appInfo map[string]s
 	return nil
 }
 
-func DeregisterSelf(registryURL string, accessToken string, appInfo map[string]string) error {
-	body := map[string]string{
+func DeregisterSelf(registryURL string, accessToken string, appInfo map[string]interface{}) error {
+	body := map[string]interface{}{
 		"serviceName": appInfo["serviceName"],
 		"instanceId":  appInfo["instanceId"],
 	}

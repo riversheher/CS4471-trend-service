@@ -1,0 +1,9 @@
+{
+    "serviceName": "Trend Service",
+    "port": 3000,
+    "description": "This is a service that provides daily trends",
+    "version": "1.0.0",
+    "instanceId": "1",
+    "url": "http://localhost",
+    "registryURL": "http://localhost:3001"
+}
