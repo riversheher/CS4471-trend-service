@@ -1,4 +1,4 @@
-package handlers
+package web
 
 import (
 	"fmt"
@@ -7,7 +7,11 @@ import (
 	"github.com/riversheher/CS4471-trend-service/pkg/client"
 )
 
-func Gainers(w http.ResponseWriter, r *http.Request) {
+func (app *Application) Home(w http.ResponseWriter, r *http.Request) {
+	app.Render(w, "home.html")
+}
+
+func (app *Application) Gainers(w http.ResponseWriter, r *http.Request) {
 	response, err := client.GetGainersLosers()
 	if err != nil {
 		http.Error(w, "Failed to fetch data", http.StatusInternalServerError)
@@ -21,7 +25,7 @@ func Gainers(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, gainers)
 }
 
-func Losers(w http.ResponseWriter, r *http.Request) {
+func (app *Application) Losers(w http.ResponseWriter, r *http.Request) {
 	response, err := client.GetGainersLosers()
 	if err != nil {
 		http.Error(w, "Failed to fetch data", http.StatusInternalServerError)
@@ -36,7 +40,7 @@ func Losers(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, losers)
 }
 
-func MostActive(w http.ResponseWriter, r *http.Request) {
+func (app *Application) MostActive(w http.ResponseWriter, r *http.Request) {
 	response, err := client.GetGainersLosers()
 	if err != nil {
 		http.Error(w, "Failed to fetch data", http.StatusInternalServerError)
@@ -52,7 +56,14 @@ func MostActive(w http.ResponseWriter, r *http.Request) {
 }
 
 func InitRoutes() {
-	http.HandleFunc("/gainers", Gainers)
-	http.HandleFunc("/losers", Losers)
-	http.HandleFunc("/active", MostActive)
+	app := NewApplication()
+	app.Initialize()
+	if err := app.Initialize(); err != nil {
+		panic(err)
+	}
+
+	http.HandleFunc("/gainers", app.Gainers)
+	http.HandleFunc("/losers", app.Losers)
+	http.HandleFunc("/active", app.MostActive)
+	http.HandleFunc("/", app.Home)
 }
