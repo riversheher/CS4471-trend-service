@@ -1,7 +1,7 @@
 package web
 
 import (
-	"fmt"
+	"encoding/json"
 	"net/http"
 
 	"github.com/riversheher/CS4471-trend-service/pkg/client"
@@ -22,7 +22,13 @@ func (app *Application) Gainers(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to convert", http.StatusInternalServerError)
 		return
 	}
-	fmt.Fprint(w, gainers)
+
+	json, err := json.Marshal(gainers)
+	if err != nil {
+		http.Error(w, "Failed to convert", http.StatusInternalServerError)
+		return
+	}
+	w.Write(json)
 }
 
 func (app *Application) Losers(w http.ResponseWriter, r *http.Request) {
@@ -37,7 +43,13 @@ func (app *Application) Losers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprint(w, losers)
+	json, err := json.Marshal(losers)
+	if err != nil {
+		http.Error(w, "Failed to convert", http.StatusInternalServerError)
+		return
+	}
+
+	w.Write(json)
 }
 
 func (app *Application) MostActive(w http.ResponseWriter, r *http.Request) {
@@ -52,7 +64,13 @@ func (app *Application) MostActive(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprint(w, active)
+	json, err := json.Marshal(active)
+	if err != nil {
+		http.Error(w, "Failed to convert", http.StatusInternalServerError)
+		return
+	}
+
+	w.Write(json)
 }
 
 func InitRoutes() {
