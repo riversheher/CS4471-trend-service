@@ -18,6 +18,10 @@ func main() {
 	fmt.Println("Loading configuration...")
 
 	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+		log.Printf("defaulting to port %s", port)
+	}
 
 	confFile, err := os.Open("config.json")
 	if err != nil {
