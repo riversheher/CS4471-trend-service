@@ -3,6 +3,7 @@ package registration
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 )
@@ -39,14 +40,16 @@ func GetTokenFromRegistry(registryURL string) (interface{}, error) {
 		return "", err
 	}
 
+	fmt.Println("access token: " + response["accessToken"].(string))
+
 	return response["accessToken"], nil
 
 }
 
-func RegisterSelf(registryURL string, accessToken string, appInfo map[string]interface{}) (interface{}, error) {
+func RegisterSelf(registryURL string, accessToken string, appInfo map[string]string) (interface{}, error) {
 
 	// Create JSON request with username and password
-	body := map[string]interface{}{
+	body := map[string]string{
 		"serviceName": appInfo["serviceName"],
 		"port":        appInfo["port"],
 		"description": appInfo["description"],
@@ -59,14 +62,29 @@ func RegisterSelf(registryURL string, accessToken string, appInfo map[string]int
 		return "", err
 	}
 
+	var prettyJSON bytes.Buffer
+	err = json.Indent(&prettyJSON, jsonBody, "", "\t")
+	if err != nil {
+		return "", err
+	}
+	fmt.Println("json: " + prettyJSON.String())
+
 	// Register the service with the registry
 	// create request with headers
 	client := &http.Client{}
-	req, err := http.NewRequest("POST", registryURL+"/register", bytes.NewBuffer(jsonBody))
+	req, err := http.NewRequest("POST", registryURL+"/register", &prettyJSON)
 	if err != nil {
 		return "", err
 	}
 	req.Header.Set("Authorization", "Bearer "+accessToken)
+	req.Header.Set("Content-Type", "application/json")
+
+	//print request body
+	b, err := io.ReadAll(req.Body)
+	if err != nil {
+		return "", err
+	}
+	fmt.Println("request body: " + string(b))
 
 	// send request
 	resp, err := client.Do(req)
@@ -75,7 +93,7 @@ func RegisterSelf(registryURL string, accessToken string, appInfo map[string]int
 	}
 	defer resp.Body.Close()
 
-	return nil, nil
+	return "", nil
 }
 
 func ReregisterSelf(registryURL string, accessToken string, appInfo map[string]interface{}) error {
