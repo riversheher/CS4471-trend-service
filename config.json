@@ -4,6 +4,6 @@
     "description": "This is a service that provides daily trends",
     "version": "1.0.0",
     "instanceId": "1",
-    "url": "http://localhost",
+    "url": "https://trend-service-44876458020.northamerica-northeast2.run.app",
     "registryURL": "https://service-registry-cs4471.1p2lshm2wxjn.us-east.codeengine.appdomain.cloud"
 }
