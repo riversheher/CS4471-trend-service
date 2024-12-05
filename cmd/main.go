@@ -17,6 +17,8 @@ func main() {
 
 	fmt.Println("Loading configuration...")
 
+	port := os.Getenv("PORT")
+
 	confFile, err := os.Open("config.json")
 	if err != nil {
 		log.Fatal(err)
@@ -46,7 +48,7 @@ func main() {
 	// Register the service with the registry
 	appInfo := map[string]string{
 		"serviceName": config["serviceName"],
-		"port":        config["port"],
+		"port":        port,
 		"description": config["description"],
 		"version":     config["version"],
 		"instanceId":  config["instanceId"],
@@ -62,6 +64,6 @@ func main() {
 
 	fmt.Println("Registration complete...")
 
-	fmt.Println("Starting server on port 8080...")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	fmt.Println("Starting server...")
+	log.Fatal(http.ListenAndServe(port, nil))
 }
