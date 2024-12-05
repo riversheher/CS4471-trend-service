@@ -69,5 +69,5 @@ func main() {
 	fmt.Println("Registration complete...")
 
 	fmt.Println("Starting server...")
-	log.Fatal(http.ListenAndServe(port, nil))
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
